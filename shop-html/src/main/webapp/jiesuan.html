@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script src="/js/qrcode.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<script>
+    $.ajaxSetup({
+        headers: {
+            'token':sessionStorage.getItem("login_token")
+        }/*,
+        //全局回调函数，数据加载完成后 相当于aop的环绕通知执行完目标方法后执行
+        complete:function(a,b){
+            var rs=a.responseJSON;
+            if(rs.code==1000){
+                alert(rs.code);
+                location.href="login.html"
+            }
+        }*/
+    })
+    var orderId="";
+    var totleMoney="";
+    $(function () {
+        orderId=sessionStorage.getItem("orderId");
+        totleMoney=sessionStorage.getItem("totleMoney");
+        erWeiMa();
+    })
+
+    function erWeiMa() {
+        $.ajax({
+          url:"http://localhost:8090/order/ErWeiMa.do",
+          type:"post",
+          dataType:"json",
+          data:{"orderId":orderId,"totleMoney":totleMoney},
+          success:function (result) {
+                if (result.code==200){
+                    alert(JSON.stringify(result.data));
+                    /*alert(result.data.code_url);*/
+                    var ewm=result.data.code_url;
+                    new QRCode(document.getElementById("qrcode"), ewm);  //
+                    $("#orderId").text(orderId);
+                    $("#money").text(totleMoney);
+                }
+          },
+          error:function () {
+              alert("获取二维码失败")
+          }
+        })
+    }
+
+    var int=self.setInterval("cx()",2000);
+
+    function cx() {
+        $.ajax({
+            url:"http://localhost:8090/order/CxDingDan.do",
+            type:"post",
+            dataType:"json",
+            data:{"orderId":orderId},
+            success:function (result) {
+                if (result.code==200){
+                    var a=result.data.trade_state_desc;
+                    if (a=="支付成功") {
+                        int=window.clearInterval(int);
+                        alert("支付成功")
+                        setPayStatus();//支付成功以后就需要改变订单的支付状态
+
+                    }
+
+
+                }
+            },
+            error:function () {
+               /* alert("支付异常")*/
+            }
+        })
+    }
+
+    function setPayStatus() {//修改订单的支付状态
+        $.ajax({
+            url:"http://localhost:8090/order/updatePayStatus.do",
+            type:"post",
+            data:{"orderId":orderId},
+            dataType:"json",
+            success:function (result) {
+                if (result.code==200){
+                    alert("改变支付状态")
+                    location.href="test.html";
+                }
+            },
+            error:function () {
+
+                alert("修改支付状态失败")
+            }
+        })
+    }
+</script>
+<body>
+<div>
+    你的订单号为:<font id="orderId" color="red"></font>
+    金额:<font id="money" color="red"></font>
+    <!--<font id="payStatus" color="red"></font>-->
+</div>
+<div id="qrcode">
+
+</div>
+</body>
+</html>

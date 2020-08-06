@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="./res/static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="./res/layui/css/layui.css">
+    <script type="text/javascript" src="./res/layui/layui.js"></script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./getUrlParam.js"></script>
+
+    <!--bootstarp的插件-->
+    <link rel="stylesheet" href="/js/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <script src="/js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+
+    <!--bootbox-->
+    <script type="text/javascript"  src="/js/bootbox/bootbox.min.js"></script>
+    <script type="text/javascript"  src="/js/bootbox/bootbox.locales.min.js"></script>
+
+    <!--datatimer-->
+    <link rel="stylesheet" href="/js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+    <script src="/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/js/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <!--引入fileInput-->
+    <link href="/js/bootstrap-fileinput-v5.0.6-17/css/fileinput.css" rel="stylesheet" type="text/css">
+    <script src="/js/bootstrap-fileinput-v5.0.6-17/js/fileinput.js"></script>
+    <!--validate-->
+    <link href="/js/bootstrapvalidator-v0.5.2-0/dist/css/bootstrapValidator.min.css">
+    <script src="/js/bootstrapvalidator-v0.5.2-0/dist/js/bootstrapValidator.min.js"></script>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+
+
+</head>
+<body>
+<div style="align-content: center">
+    <div id="addressArr" style="height: 250px;width: 600px">
+        <!--<h1>收货人地址</h1>
+        <table>
+            <tr style="display: none">
+                <td>xx</td>
+                <td>xx</td>
+                <td>xx</td>
+            </tr>
+        </table>
+        <input type="button" value="新增收货人地址" onclick="addPeo()"/>-->
+    </div>
+
+    <div style="height: 100px;width: 600px">
+        <input type="radio" name="payType" value="0"/>货到付款
+        <input type="radio" name="payType" value="1"/>在线付款
+        <input type="radio" name="payType" value="2"/>打白条
+    </div>
+
+    <div id="xiangQing">
+        <h2>商品详情</h2>
+        <table id="productCart">
+
+        </table>
+    </div>
+    <div>
+        <span style="color: red ;margin-left: 300px">总金额</span>
+        <span  id="totleMoney"></span>
+
+        <br/>
+        <br/>
+        <button type="button" style="margin-left: 300px" onclick="subOrder()">提交订单</button>
+    </div>
+
+</div>
+    <!-- 新增用户DIV -->
+    <div id="addVip" style="display:none;">
+        <!-- 新增用户表单 -->
+        <form id="addVipForm" class="form-horizontal" style="">
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">收货人姓名</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="name"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">手机号</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="iphone"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">地址</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="dateilAdd"/>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">地区</label>
+                <div class="col-sm-8">
+                    <select id="provice" onchange="showCity()">
+                        <option value='-1'>请选择</option>
+                    </select>
+                    <select id="city" onchange="showCounty()">
+                        <option value='-1'>请选择</option>
+                    </select>
+                    <select id="county">
+                        <option value='-1'>请选择</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</body>
+<script>
+    $.ajaxSetup({
+        headers: {
+            'token':sessionStorage.getItem("login_token")
+        },
+        //全局回调函数，数据加载完成后 相当于aop的环绕通知执行完目标方法后执行
+        complete:function(a,b){
+            var rs=a.responseJSON;
+            if(rs.code==1000){
+                /*alert(rs.code);*/
+                location.href="login.html"
+            }
+        }
+    })
+
+    var id;
+    var sendFlag;
+    $(function () {
+        id=UrlParm.parm("id");
+        initAddress();
+        initArea();
+        inintChecdProduct();
+        addPeoDiv=$("#addVip").html();
+        //生成一个请求的唯一标示//传递后台唯一标识，解决二次请求
+        sendFlag=new Date().getTime();
+    })
+    var areaList=[];
+    function initArea() {
+        $.ajax({
+            url:"http://localhost:8090/area/findAllArea.do",
+            type:"get",
+            dataType:"json",
+            success:function (result) {
+                if (result.length>0){
+                    areaList=result;
+                    showProvice();
+
+                }
+            },
+            error:function () {
+                /*alert("获取地区失败")*/
+            }
+        })
+    }
+    function showProvice() {
+        $("#addVipForm #provice").html("<option value='-1' >请选择</option>");
+        var proviceHtml="<option value='-1' >请选择</option>";
+        for (var i = 0; i <areaList.length ; i++) {
+            if(areaList[i].pid==0){
+                proviceHtml += "<option value='"+areaList[i].id+"'>"+areaList[i].areaName+"</option>";
+            }
+        }
+        $("#addVipForm #provice").html(proviceHtml)
+    }
+    function showCity() {
+        $("#addVipForm #city").html("<option value='-1' >请选择</option>");
+        var cityHtml="<option value='-1' >请选择</option>";
+        var id= $("#addVipForm #provice").val();
+        for (var i = 0; i <areaList.length ; i++) {
+            if(areaList[i].pid==id){
+                cityHtml += "<option value='"+areaList[i].id+"'>"+areaList[i].areaName+"</option>";
+            }
+        }
+        $("#addVipForm #city").html(cityHtml)
+    }
+    function showCounty() {
+        $("#addVipForm #county").html("<option value='-1' >请选择</option>");
+        var CountyHtml="<option value='-1' >请选择</option>";
+        var id= $("#addVipForm #city").val();
+        for (var i = 0; i <areaList.length ; i++) {
+            if(areaList[i].pid==id){
+                CountyHtml += "<option value='"+areaList[i].id+"'>"+areaList[i].areaName+"</option>";
+            }
+        }
+        $("#addVipForm #county").html(CountyHtml)
+    }
+
+
+    function initAddress() {
+        var htmls="";
+        var addArr;
+        $.ajax({
+            url:"http://localhost:8090/address/findAllPeo.do",
+            type:"post",
+            dataType:"json",
+            data:{"vipId":id},
+            async:false,
+            success:function (result) {
+                if (result.code==200){
+                    addArr=result.data;
+                    /*alert(JSON.stringify(addArr))*/
+                    htmls+="<h1>收货人地址</h1>";
+                    htmls+="<input type=\"button\" value=\"新增收货人地址\" onclick=\"addPeo()\"/>";
+                    htmls+="<table border='0'>";
+                    for (var i = 0; i <addArr.length ; i++) {
+                        var addree=addArr[i];
+                        var ra="<input type=\"radio\" name=\"ss\" value=\""+addree.id+"\"/>";
+                        if (addree.isCheck==1) {
+                            ra="<input type=\"radio\" name=\"ss\" value=\""+addree.id+"\" checked/>"
+                        }
+                        htmls+="<tr>\n" +
+                            "            <td>\n" +
+                            "            "+ra+"\n" +
+                            "            </td>\n" +
+                            "            <td>"+addree.name+"</td>\n" +
+                            "            <td>"+addree.provinceName+"</td>\n" +
+                            "            <td>"+" &nbsp&nbsp&nbsp&nbsp  "+"</td>\n" +
+                            "            <td>"+" &nbsp&nbsp&nbsp&nbsp  "+"</td>\n" +
+                            "            <td>"+addree.name+"</td>\n" +
+                            "            <td>"+addree.area+"</td>\n" +
+                            "            <td>"+addree.dateilAdd+"</td>\n" +
+                            "            <td>"+" &nbsp&nbsp&nbsp&nbsp  "+"</td>\n" +
+                            "            <td>"+addree.iphone+"</td>\n" +
+                            "        </tr>";
+                    }
+                    htmls+="</table>";
+                    $("#addressArr").html(htmls);
+                }
+                }
+
+        })
+
+    }
+
+    var addPeoDiv;
+    function addPeo() {
+        initArea();
+        bootbox.confirm({
+            title: "新增用户信息",
+            size: "large",
+            message: $("#addVip form"),
+            buttons: {
+                confirm: {
+                    label: "确认"
+                },
+                cancel: {
+                    label: "取消",
+                    //定义按钮样式
+                    className: "btn btn-danger"
+                }
+            },
+            callback:function(result){
+                if (result){
+                    var param={}
+                    var name=$("#addVipForm #name").val();
+                    var dateilAdd=$("#addVipForm #dateilAdd").val();
+                    var iphone=$("#addVipForm #iphone").val();
+
+                    var areaProvince=$("#addVipForm #provice").val();
+                    var areacity=$("#addVipForm #city").val();
+                    var areaCounty=$("#addVipForm #county").val();
+                    var area;
+                    area=areaProvince+",";
+                    area+=areacity+",";
+                    area+=areaCounty;
+                    param.name=name;
+                    param.dateilAdd=dateilAdd;
+                    param.iphone=iphone;
+                    param.areaIds=area;
+                    param.province=areaProvince;
+                    param.vipId=id;
+                    $.ajax({
+                        type:"post",
+                        url:"http://localhost:8090/address/addAddress.do",
+                        dataType:"json",
+                        data:param,
+                        success:function (result) {
+                            if (result.code == 200) {
+                                alert("新增收货人成功")
+                            }else {
+                                /!*alert("新增收货人失败")*!/
+                            }
+                        }
+                    })
+                }
+                $("#addVip").html(addPeoDiv);
+
+            }
+        })
+    }
+
+    function inintChecdProduct() {
+        $.ajax({
+            url:"http://localhost:8090/cart/queryCheckProduct.do",
+            type:"get",
+            dataType:"json",
+            async:false,
+            success:function (result) {
+                if(result.code==200){
+                    var cartArr=result.data;
+                    var htmlPro="";
+                    var moneys=0;
+                    for (var i = 0; i <cartArr.length ; i++) {
+                        var pro=cartArr[i];
+                        moneys+=pro.money;
+                        htmlPro+=" <tr>\n" +
+                            "                <td><img style='width: 80px;height: 80px' src=\""+pro.image+"\"></td>\n" +
+                            "                <td>"+pro.price+"</td>\n" +
+                            "                <td>&nbsp</td>\n" +
+                            "                <td>"+pro.productName+"</td>\n" +
+                            "                <td>&nbsp</td>\n" +
+                            "                <td>"+pro.money+"</td>\n" +
+                            "                <td>&nbsp</td>\n" +
+                            "                <td>&nbsp</td>\n" +
+                            "                <td>"+pro.count+"</td>\n" +
+                            "            </tr>";
+                    }
+                    $("#productCart").html(htmlPro);
+                    $("#totleMoney").html(moneys);
+                }
+
+            },error:function () {
+                alert("获取购物车信息异常")
+            }
+        })
+    }
+
+
+    function subOrder() {
+        var payType=$("[name='payType']:checked").val();
+        var addressId=$("[name='ss']:checked").val();
+        $.ajax({
+            url:"http://localhost:8090/order/addOrder.do",
+            type:"post",
+            dataType:"json",
+            data:{"addressId":addressId,"payType":payType,"flag":sendFlag},
+            success:function (result) {
+                if (result.code==200){
+                    var orderId=result.data.orderId;
+                    var totleMoney=result.data.totleMoney;
+                    sessionStorage.setItem("orderId",orderId);
+                    sessionStorage.setItem("totleMoney",totleMoney);
+                    location.href="jiesuan.html";
+                    alert("创建订单成功")
+                }else if (result.code==2000){
+                    alert(result.msg);
+                }else if (result.code==300){
+                    alert(result.msg);
+                }
+            },error:function () {
+                alert("提交订单失败")
+            }
+        })
+    }
+</script>
+</html>

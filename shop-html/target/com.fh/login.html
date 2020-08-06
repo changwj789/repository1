@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="./res/static/css/main.css">
+  <link rel="stylesheet" type="text/css" href="./res/layui/css/layui.css">
+  <script type="text/javascript" src="./res/layui/layui.js"></script>
+  <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+
+  <!--bootstarp的插件-->
+  <link rel="stylesheet" href="/js/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <script src="/js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+
+  <!--bootbox-->
+  <script type="text/javascript"  src="/js/bootbox/bootbox.min.js"></script>
+  <script type="text/javascript"  src="/js/bootbox/bootbox.locales.min.js"></script>
+
+  <!--datatimer-->
+  <link rel="stylesheet" href="/js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+  <script src="/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+  <script src="/js/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+  <!--引入fileInput-->
+  <link href="/js/bootstrap-fileinput-v5.0.6-17/css/fileinput.css" rel="stylesheet" type="text/css">
+  <script src="/js/bootstrap-fileinput-v5.0.6-17/js/fileinput.js"></script>
+  <!--validate-->
+  <link href="/js/bootstrapvalidator-v0.5.2-0/dist/css/bootstrapValidator.min.css">
+  <script src="/js/bootstrapvalidator-v0.5.2-0/dist/js/bootstrapValidator.min.js"></script>
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+
+
+</head>
+<body>
+  <div class="site-nav-bg">
+    <div class="site-nav w1200">
+      <p class="sn-back-home">
+        <i class="layui-icon layui-icon-home"></i>
+        <a href="#">首页ssd</a>
+      </p>
+      <div class="sn-quick-menu">
+        <div class="login"><a href="login.html">登录</a></div>
+        <div class="sp-cart"><a href="shopcart.html">购物车</a><span></span></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="header">
+    <div class="headerLayout w1200">
+      <div class="headerCon">
+        <h1 class="mallLogo">
+          <a href="#" title="母婴商城">
+            <img src="../res/static/img/logo.png">
+          </a>
+        </h1>
+        <div class="mallSearch">
+          <form action="" class="layui-form" novalidate>
+            <input type="text" name="title" required  lay-verify="required" autocomplete="off" class="layui-input" placeholder="请输入需要的商品">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">
+                <i class="layui-icon layui-icon-search"></i>
+            </button>
+            <input type="hidden" name="" value="">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="content content-nav-base  login-content">
+    <div class="main-nav">
+      <div class="inner-cont0">
+        <div class="inner-cont1 w1200">
+          <div class="inner-cont2">
+            <a href="commodity.html" class="active">所有商品</a>
+            <a href="buytoday.html">今日团购</a>
+            <a href="information.html">母婴资讯</a>
+            <a href="about.html">关于我们</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="login-bg">
+      <div class="login-cont w1200">
+        <div class="form-box">
+          <form class="layui-form" action="">
+            <legend>手机号登录</legend>
+            <div class="layui-form-item">
+              <div class="layui-inline iphone">
+                <div class="layui-input-inline">
+                  <i class="layui-icon layui-icon-cellphone iphone-icon"></i>
+                  <input type="tel" name="phone" id="phone" lay-verify="required|phone" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-inline veri-code">
+                <div class="layui-input-inline">
+                  <input id="pnum" type="text" name="pnum" lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input">
+                  <input onclick="sendMassage()" type="button" class="layui-btn" id="find"  value="验证码" />
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item login-btn">
+              <div class="layui-input-block">
+                <input type="button" class="layui-btn" lay-submit="" value="登录" onclick="login()" />
+                <input type="button" class="layui-btn" lay-submit="" value="注册" onclick="zhuce()" />
+               <!-- <button  type="button" class="layui-btn" lay-submit="" lay-filter="demo1" onclick="login()">登录</button><br/>
+                <button  type="button" class="layui-btn" lay-submit="" lay-filter="demo1" onclick="zhuce()">注册</button>-->
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="ng-promise-box">
+      <div class="ng-promise w1200">
+        <p class="text">
+          <a class="icon1" href="javascript:;">7天无理由退换货</a>
+          <a class="icon2" href="javascript:;">满99元全场免邮</a>
+          <a class="icon3" style="margin-right: 0" href="javascript:;">100%品质保证</a>
+        </p>
+      </div>
+    </div>
+    <div class="mod_help w1200">
+      <p>
+        <a href="javascript:;">关于我们</a>
+        <span>|</span>
+        <a href="javascript:;">帮助中心</a>
+        <span>|</span>
+        <a href="javascript:;">售后服务</a>
+        <span>|</span>
+        <a href="javascript:;">母婴资讯</a>
+        <span>|</span>
+        <a href="javascript:;">关于货源</a>
+      </p>
+      <p class="coty">母婴商城版权所有 &copy; 2012-2020</p>
+    </div>
+  </div>
+  <script type="text/javascript">
+
+    var areaList=[];
+    var addVipHtml;
+    $(function () {
+        initArea();
+        addVipHtml=$("#addVip").html();
+    })
+    function initArea() {
+        $.ajax({
+            url:"http://localhost:8090/area/findAllArea.do",
+            type:"get",
+            dataType:"json",
+            success:function (result) {
+                if (result.length>0){
+                    areaList=result;
+                    showProvice();
+
+                }
+            },
+            error:function () {
+                /*alert("获取地区失败")*/
+            }
+        })
+    }
+
+    function showProvice() {
+        $("#addVipForm #provice").html("<option value='-1' >请选择</option>");
+        var proviceHtml="<option value='-1' >请选择</option>";
+        for (var i = 0; i <areaList.length ; i++) {
+            if(areaList[i].pid==0){
+                proviceHtml += "<option value='"+areaList[i].id+"'>"+areaList[i].areaName+"</option>";
+            }
+        }
+        $("#addVipForm #provice").html(proviceHtml)
+    }
+    function showCity() {
+        $("#addVipForm #city").html("<option value='-1' >请选择</option>");
+        var cityHtml="<option value='-1' >请选择</option>";
+        var id= $("#addVipForm #provice").val();
+        for (var i = 0; i <areaList.length ; i++) {
+            if(areaList[i].pid==id){
+                cityHtml += "<option value='"+areaList[i].id+"'>"+areaList[i].areaName+"</option>";
+            }
+        }
+        $("#addVipForm #city").html(cityHtml)
+    }
+    function showCounty() {
+        $("#addVipForm #county").html("<option value='-1' >请选择</option>");
+        var CountyHtml="<option value='-1' >请选择</option>";
+        var id= $("#addVipForm #city").val();
+        for (var i = 0; i <areaList.length ; i++) {
+            if(areaList[i].pid==id){
+                CountyHtml += "<option value='"+areaList[i].id+"'>"+areaList[i].areaName+"</option>";
+            }
+        }
+        $("#addVipForm #county").html(CountyHtml)
+    }
+
+
+
+        var countdown=60;
+        function settime(obj) {
+        if (countdown == 0) {
+            obj.removeAttribute("disabled");
+            obj.classList.remove("layui-btn-disabled")
+            obj.value="获取验证码";
+            countdown = 60;
+            return;
+        } else {
+
+            obj.value="重新发送(" + countdown + ")";
+            countdown--;
+        }
+        setTimeout(function() {
+            settime(obj) }
+            ,1000)
+        }
+
+
+    function sendMassage() {
+        var iphone=$("#phone").val();
+
+        if (/^1\d{10}$/.test(iphone)){
+            $.ajax({
+                url:"http://localhost:8090/vip/sendMessage.do",
+                type:"post",
+                data:{"iphone":iphone},
+                success:function (result) {
+                    if (result.code==200){
+                        $("#find").addClass(" layui-btn-disabled");
+                        $('#find').attr('disabled',"true");
+                        settime($("#find")[0]);
+                        $("#msg").text(result.data);
+                    }else {
+                        /*layer.msg(data.msg);*/
+                    }
+                },
+                error:function () {
+                    alert("发送短信失败")
+                }
+            })
+        }
+    }
+
+    function login() {
+        //获取手机号
+        var iphone=$("#phone").val();
+        //获取验证码
+        var code=$("#pnum").val();
+        $.ajax({
+            url:"http://localhost:8090/vip/login.do",
+            type:"post",
+            data:{"iphone":iphone,"code":code},
+            success:function (result) {
+                alert(JSON.stringify(result))
+               /* alert(JSON.stringify(result.data.vip.name))*/
+                if (result.data.status==200){
+                    // 秘钥返回了
+                    var token=result.data.token;
+                    var login_name=result.data.vip.name;
+                    var login_vipId=result.data.vip.id;
+                    alert(login_name)
+                    //秘钥要保存到浏览器中  localstorage  sessionstorage  区别就是存值的存活范围
+                    sessionStorage.setItem("login_token",token);
+                    sessionStorage.setItem("login_name",login_name);
+                    sessionStorage.setItem("login_vipId",login_vipId);
+                    alert("登陆成功")
+                    location.href="index.html"
+                }else {
+                    if (result.data.status==300){
+                        alert(result.data.message)
+                    }
+                }
+
+
+            },
+            error:function () {
+                alert("登陆异常")
+            }
+        })
+    }
+
+
+
+        function zhuce() {
+
+            initArea();
+
+            $("#addVipForm #imagePath").fileinput({
+                uploadUrl:"http://localhost:8090/vip/uploadfile.do", //上传的地址
+                browseClass:"btn btn-success", //按钮样式
+                dropZoneEnabled: false
+            }).on("fileuploaded", function(e, data, previewiId, index) {
+                //把文件的访问路径  赋给隐藏域
+                $("#addVipForm #realPath").val(data.response.filePath);
+            });
+            bootbox.confirm({
+                title: "新增用户信息",
+                size: "large",
+                message: $("#addVip form"),
+                buttons: {
+                    confirm: {
+                        label: "确认"
+                    },
+                    cancel: {
+                        label: "取消",
+                        //定义按钮样式
+                        className: "btn btn-danger"
+                    }
+                },
+                callback:function(result){
+                    if (result){
+                        alert("success")
+                        var param={}
+                        var name=$("#addVipForm #name").val();
+                        var phoneNum=$("#addVipForm #phoneNum").val();
+                        var image=$("#addVipForm #realPath").val();
+                        var area=$("#addVipForm #area").val();
+                        var areaProvince=$("#addVipForm #provice").val();
+                        var areacity=$("#addVipForm #city").val();
+                        var areaCounty=$("#addVipForm #county").val();
+                        var area;
+                        area=areaProvince+",";
+                        area+=areacity+",";
+                        area+=areaCounty;
+                        param.name=name;
+                        param.phoneNum=phoneNum;
+                        param.image=image;
+                        param.area=area;
+                        $.ajax({
+                            type:"post",
+                            url:"http://localhost:8090/vip/addVip.do",
+                            dataType:"json",
+                            data:param,
+                            success:function (result) {
+                                if (result.code == 200) {
+                                    alert("添加成功")
+                                }else {
+                                    /*alert("注册失败")*/
+                                }
+                            }
+                        })
+                    }
+                    $("#addVip").html(addVipHtml);
+
+                }
+            })
+
+
+        }
+  </script>
+
+
+
+
+
+  <!-- 新增用户DIV -->
+  <div id="addVip" style="display: none;">
+    <!-- 新增用户表单 -->
+    <form id="addVipForm" class="form-horizontal" style="">
+      <div class="form-group">
+        <label  class="col-sm-2 control-label">用户名</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" id="name"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label  class="col-sm-2 control-label">手机号</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" id="phoneNum"/>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label  class="col-sm-2 control-label">照片</label>
+        <div class="col-sm-8">
+          <input type="text" id="realPath"/>
+          <input type="file" class="form-control" id="imagePath" name="image"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label  class="col-sm-2 control-label">地区</label>
+        <div class="col-sm-8">
+          <select id="provice" onchange="showCity()">
+            <option value='-1'>请选择</option>
+          </select>
+          <select id="city" onchange="showCounty()">
+            <option value='-1'>请选择</option>
+          </select>
+          <select id="county">
+            <option value='-1'>请选择</option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
